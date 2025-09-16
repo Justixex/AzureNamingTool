@@ -88,7 +88,7 @@ jobs:
   deploy: 
     defaults:
       run:
-        working-directory: ready/AzNamingTool 
+        working-directory: . 
     permissions:
       contents: none
     runs-on: ubuntu-latest
@@ -104,10 +104,15 @@ jobs:
         with:
           name: .net-app
 
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          environment: 'AzureChinaCloud'    
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
